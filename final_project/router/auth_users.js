@@ -31,13 +31,14 @@ regd_users.post("/login", (req,res) => {
     // Generate JWT access token
     let accessToken = jwt.sign({
       data: req.body.username,
-    }, 'access', { expiresIn: 60 * 60 });
+    }, 'PrivateKey', { expiresIn: 60 * 60 });
 
     // Store access token and username in session
     req.session.authorization = {
       accessToken, username
     }
-    return res.status(200).send("Login success");
+    //return res.status(200).send("Login success");
+    return res.status(200).json(accessToken);
   }
   return res.status(300).json({message: "Error"});
 });
