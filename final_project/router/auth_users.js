@@ -31,7 +31,7 @@ regd_users.post("/login", (req,res) => {
     // Generate JWT access token
     let accessToken = jwt.sign({
       data: req.body.username,
-    }, 'PrivateKey', { expiresIn: 60 * 60 });
+    }, 'fingerprint_customer', { expiresIn: 60 * 60 });
 
     // Store access token and username in session
     req.session.authorization = {
@@ -44,9 +44,35 @@ regd_users.post("/login", (req,res) => {
 });
 
 // Add a book review
-regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+regd_users.put("/auth/review/:isbn", function(req, res) {
+  // User is now logged, we will fetch the ISBN
+  let requestISBN = req.params.isbn;
+  let returnBook = Object.values(books).filter((book) => {
+    return book.ISBN === requestISBN;
+  });
+
+  if(returnBook.length > 0) {
+    // Book is found, we need to check if review is existing
+    let potentialExistingReview = returnBook[0].reviews.filter((review) => {
+      if(review.user === req.user.data) {
+        // Edit the review
+        review.comment = req.body.comment;
+        return review.user;
+      }
+    });
+
+    if(!potentialExistingReview.length > 0){
+      // We need to add review here
+      returnBook[0].reviews.push({"user": req.user.data, "comment": req.body.comment});
+      return res.status(201).end();
+    }
+    else{
+      return res.status(200).end();
+    }
+  }
+  else{
+    return res.status(404).json({ message: "ISBN not found" });
+  }
 });
 
 module.exports.authenticated = regd_users;

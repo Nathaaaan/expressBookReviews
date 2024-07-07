@@ -24,15 +24,7 @@ public_users.post("/register", (req,res) => {
       users.push({"username": req.body.username, "password": req.body.password});
       return res.status(200).json({message: "User Created"});
     }
-
-
-
   }
-
-
-
-
-  //return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get the book list available in the shop: Task 1
@@ -75,7 +67,6 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-
   const requestTitle = req.params.title;
   let returnBooks = Object.values(books).filter((book) => {
     return book.title === requestTitle;
@@ -92,7 +83,6 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-
   const requestISBN = req.params.isbn;
   let returnBook = Object.values(books).filter((book) => {
     return book.ISBN === requestISBN;
